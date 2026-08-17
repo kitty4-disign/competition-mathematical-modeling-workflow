@@ -1,6 +1,8 @@
 # Competition Mathematical Modeling Workflow
 
-这是一个面向数学建模竞赛与类似分析任务的 Manus 技能包。它将问题拆解、候选模型准入、可审计建模、验证、灵敏度分析、论文交付和工具证据日志整合为一条可复现工作流。
+这是一个面向数学建模竞赛与类似分析任务的**通用、可复现工作流与资源包**。它将问题拆解、候选模型准入、可审计建模、验证、灵敏度分析、论文交付和工具证据日志整合为一条可复现的执行链。
+
+它**不只适用于 Manus**。核心工作流、参考规范、Markdown 模板、证据包和 Python 测试脚本均不依赖 Manus，可由个人、团队、其他 AI/Agent 框架或一般自动化环境直接阅读、采用和改造。`skill/` 目录只是把相同内容封装为 Manus 可识别的技能包，以便在 Manus 中自动路由和加载；它不是使用这些方法的前提。
 
 本版本新增了**残差自相关自动修正与回退协议**。当训练残差出现预先声明的自相关异常时，工作流不在最终测试期上调参，而是在训练期内部通过固定的滚动验证窗选择有限修正候选；候选冻结后才允许运行一次最终时间外确认。
 
@@ -8,8 +10,8 @@
 
 | 路径 | 内容 |
 |---|---|
-| [`skill/`](skill/) | 可安装的 `competition-mathematical-modeling-workflow` 技能包。 |
-| [`tests/`](tests/) | AirPassengers 真实时间序列上的端到端、残差自动修正和复现性测试工件。 |
+| [`skill/`](skill/) | Manus 技能包封装；其中的 Markdown 工作流、参考规范与模板同样可被其他环境直接使用。 |
+| [`tests/`](tests/) | 不依赖 Manus 的 AirPassengers 真实时间序列端到端、残差自动修正与复现性测试工件。 |
 | [`tests/airpassengers_model_evidence_pack.md`](tests/airpassengers_model_evidence_pack.md) | 实际填充的候选准入、模型规格、验证、残差修正与证据包。 |
 | [`tests/residual_autocorrection_update_report.md`](tests/residual_autocorrection_update_report.md) | 自动修正流程的设计、更新与实测报告。 |
 
@@ -41,9 +43,15 @@ python3 tests/run_residual_autocorrection_test.py
 
 在测试案例中，R1 残差 AR(1) 修正在未查看最终测试期的内部滚动验证中被选定：其平均 MAE 相对无修正基线改善 24.873%。冻结后对 1960 年执行一次确认，MAPE 从 7.839% 降至 6.152%。详情见 [`tests/residual_autocorrection_update_report.md`](tests/residual_autocorrection_update_report.md)。该结果仅验证工作流与测试案例，不构成生产预测保证。
 
-## 安装技能
+## 使用方式：Manus 与非 Manus 环境
 
-将 [`skill/`](skill/) 目录作为技能包导入或复制到 Manus 的技能目录。随后在处理建模竞赛题目、模型选型、可复现计算、验证与论文交付时触发 `competition-mathematical-modeling-workflow`。
+| 使用场景 | 建议方式 |
+|---|---|
+| Manus | 将 [`skill/`](skill/) 导入或复制到 Manus 的技能目录，在建模竞赛题目、选型、计算、验证和论文交付任务中触发 `competition-mathematical-modeling-workflow`。 |
+| 其他 AI/Agent 框架 | 将 [`skill/SKILL.md`](skill/SKILL.md) 作为流程说明，按需加载 `references/` 与 `templates/`；把模型证据包和审计表接入你的任务状态、提示词或工作流引擎。 |
+| 人工团队或通用自动化 | 直接采用 `references/` 中的阶段门禁与 `templates/` 中的 Markdown 工件；使用 `tests/` 的脚本、数据和结果作为可复现实例。 |
+
+无论使用何种平台，都应遵循相同的质量边界：候选模型先经过数据、假设和复现性准入；模型修改不能使用最终测试期调参；外部工具、AI 生成公式或代码需保留来源、最小复现和独立检查记录。
 
 ## References
 
