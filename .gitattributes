@@ -1,0 +1,2 @@
+# Preserve the original public data snapshot byte-for-byte.
+tests/data/airline-passengers.csv -text

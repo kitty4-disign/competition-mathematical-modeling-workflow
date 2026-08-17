@@ -1,0 +1,95 @@
+{
+  "data_audit": {
+    "rows": 144,
+    "columns": [
+      "Month",
+      "Passengers"
+    ],
+    "date_start": "1949-01-01",
+    "date_end": "1960-12-01",
+    "missing_values": {
+      "Month": 0,
+      "Passengers": 0
+    },
+    "duplicate_months": 0,
+    "is_monthly_continuous": true,
+    "passenger_min": 104,
+    "passenger_max": 622,
+    "source_sha256": "8cb51be753a718d9be5d76d7e238cc224792754676adc21faa59e954b0201621"
+  },
+  "split": {
+    "train_start": "1949-01-01",
+    "train_end": "1959-12-01",
+    "test_start": "1960-01-01",
+    "test_end": "1960-12-01",
+    "train_rows": 132,
+    "test_rows": 12
+  },
+  "main_model_spec": {
+    "family": "OLS on log(Passengers)",
+    "formula": "log(y_t) = beta0 + beta1*t + sum(beta_m * I[month=m]), m=2..12",
+    "assumptions": [
+      "Monthly seasonality is stable enough to be represented by fixed month effects.",
+      "Long-run trend is approximately linear on the log scale over the training window.",
+      "Forecast horizon is limited to the next 12 months; conclusions are not claimed beyond it."
+    ],
+    "coefficients": [
+      4.725516359448694,
+      0.010307450378673536,
+      -0.017530501383349335,
+      0.11892457215430187,
+      0.07680551100793077,
+      0.0727501534309315,
+      0.19528745783773532,
+      0.2956582106416593,
+      0.28856418737666384,
+      0.1474939164801305,
+      0.006278299319263327,
+      -0.1346232928724944,
+      -0.019028310955130162
+    ]
+  },
+  "time_out_metrics": {
+    "S1_seasonal_naive": {
+      "MAE": 47.833333333333336,
+      "RMSE": 50.708316214732804,
+      "MAPE_pct": 9.987532920823485,
+      "bias": -47.833333333333336
+    },
+    "S2_log_trend_month_effect": {
+      "MAE": 35.04822354008908,
+      "RMSE": 40.15013647429162,
+      "MAPE_pct": 7.8387556669819185,
+      "bias": 35.04822354008908
+    },
+    "S3_log_trend_only": {
+      "MAE": 69.7159537693323,
+      "RMSE": 79.36672652506961,
+      "MAPE_pct": 15.212932415166858,
+      "bias": 30.239119639270267
+    }
+  },
+  "residual_diagnostics": {
+    "training_residual_mean": 0.06018080309865078,
+    "training_residual_lag1_correlation": 0.8239857450837379,
+    "note": "Lag-1 correlation is descriptive only; no claim of white-noise residuals is made without a formal test."
+  },
+  "boundary_checks": {
+    "all_s2_predictions_positive": true,
+    "all_s2_predictions_finite": true,
+    "s2_test_min": 426.0475758138719,
+    "s2_test_max": 630.6910666968859
+  },
+  "sensitivity_protocol": {
+    "type": "local OAT on fitted log-scale trend coefficient",
+    "baseline": 0.010307450378673536,
+    "perturbation": "-5%, 0%, +5% of trend coefficient; all other coefficients fixed",
+    "output": "mean 1960 forecast",
+    "limitation": "This is local parameter sensitivity, not a global importance ranking and not a model-structure uncertainty analysis."
+  },
+  "external_or_ai_implementation": {
+    "third_party_forecast_implementation": "none; model fit implemented with numpy.linalg.lstsq",
+    "ai_generated_model_or_code_used": "none in the test calculation",
+    "independent_check": "seasonal-naive baseline and a deliberately weaker trend-only comparator are reported alongside the main model"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "configuration": {
+    "outer_train_end": "1959-12-01",
+    "outer_test_start": "1960-01-01",
+    "inner_origins_fixed_before_outer_test": [
+      "1957-12-01",
+      "1958-12-01"
+    ],
+    "primary_metric": "MAE",
+    "delta_min_relative_pct": 2.0,
+    "seasonal_period": 12,
+    "nonseasonal_max_lag": 5
+  },
+  "final_train_residual_trigger": {
+    "acf": {
+      "1": 0.7858987938372193,
+      "2": 0.675743152130063,
+      "3": 0.5259329167184231,
+      "4": 0.43177600827295237,
+      "5": 0.4158104888018538,
+      "6": 0.3779999257090352,
+      "7": 0.33743846948913836,
+      "8": 0.29432405575878584,
+      "9": 0.29923709795806114,
+      "10": 0.2871533985328724,
+      "11": 0.2785340898126532,
+      "12": 0.27673119532161383
+    },
+    "threshold": 0.17059610283658388,
+    "triggered": true
+  },
+  "inner_validation_triggers": {
+    "origins": [
+      {
+        "origin": "1957-12-01",
+        "train_rows": 108,
+        "threshold": 0.18860108793527774,
+        "acf": {
+          "1": 0.6696710790828453,
+          "2": 0.5156161702312222,
+          "3": 0.3211348191578207,
+          "4": 0.23542138208726923,
+          "5": 0.24542206531110897,
+          "6": 0.21158223173653065,
+          "7": 0.15379559876557491,
+          "8": 0.10869038754973298,
+          "9": 0.08878822621059972,
+          "10": 0.06632612138215577,
+          "11": 0.04732885641846217,
+          "12": 0.044138850479483696
+        },
+        "triggered": true
+      },
+      {
+        "origin": "1958-12-01",
+        "train_rows": 120,
+        "threshold": 0.17892270211835426,
+        "acf": {
+          "1": 0.7335386573265822,
+          "2": 0.587916610342077,
+          "3": 0.4113666641100232,
+          "4": 0.299827232701904,
+          "5": 0.30824907430041515,
+          "6": 0.282205857574996,
+          "7": 0.2455265303289679,
+          "8": 0.19233551923765027,
+          "9": 0.15659764796526904,
+          "10": 0.11969276068046918,
+          "11": 0.09656901076691421,
+          "12": 0.09689108165463384
+        },
+        "triggered": true
+      }
+    ]
+  },
+  "selected_candidate_before_outer_test": "R1_AR1_residual",
+  "status": "accepted_correction",
+  "conclusion": "A residual correction passed the fixed inner rolling-validation gates; outer metrics are confirmatory only.",
+  "outer_metrics": [
+    {
+      "candidate": "R0_base",
+      "outer_MAE": 35.04822354008908,
+      "outer_RMSE": 40.15013647429162,
+      "outer_MAPE_pct": 7.8387556669819185,
+      "outer_residual_lag1": 0.2589033770615055,
+      "lag": null,
+      "phi": null,
+      "selected_before_outer_test": false
+    },
+    {
+      "candidate": "R1_AR1_residual",
+      "outer_MAE": 27.419459726667316,
+      "outer_RMSE": 33.65723704547093,
+      "outer_MAPE_pct": 6.152053700600135,
+      "outer_residual_lag1": 0.14518777633638794,
+      "lag": 1,
+      "phi": 0.7915450884408168,
+      "selected_before_outer_test": true
+    },
+    {
+      "candidate": "R2_seasonal_AR12_residual",
+      "outer_MAE": 26.39160024621412,
+      "outer_RMSE": 31.494342898738292,
+      "outer_MAPE_pct": 5.884656742392474,
+      "outer_residual_lag1": 0.09052706874841394,
+      "lag": 12,
+      "phi": 0.31872738662576194,
+      "selected_before_outer_test": false
+    }
+  ],
+  "candidate_parameters": {
+    "R0_base": {
+      "lag": null,
+      "phi": null
+    },
+    "R1_AR1_residual": {
+      "lag": 1,
+      "phi": 0.7915450884408168
+    },
+    "R2_seasonal_AR12_residual": {
+      "lag": 12,
+      "phi": 0.31872738662576194
+    }
+  },
+  "limitations": [
+    "The white-noise trigger uses an ACF threshold as a lightweight diagnostic, not a substitute for a full model adequacy study.",
+    "R1/R2 are limited correction candidates; a rejected correction must not be adopted merely because it changes residual correlation.",
+    "The outer 1960 test is used once after inner selection and cannot establish production reliability by itself."
+  ]
+}
