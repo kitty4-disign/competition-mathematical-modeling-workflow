@@ -15,7 +15,7 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 
 信息缺失但不阻塞时，采用最少的合理假设并集中列入“假设与局限”；信息会改变模型选择时，先索取信息，不要隐式猜测。建立 `decision_log`，记录模型选择、参数口径和被排除的替代方案。若计划使用 LLM、Agent 或生成式工具，先读取 `references/ai-assisted-modeling.md`，建立“任务合同”，并将 AI 输出视为待验证候选。
 
-开始任一阶段时，读取 `references/deliverables.md` 并建立相应交付物。每个关键子问题从 `templates/model-evidence-pack.md` 复制一份“模型证据包”，并在选型、实现、验证和论文写作时持续更新。若当前会话存在合适的已启用工具/连接器，先阅读 `references/tool-enhanced-execution.md`，完成工具预检，并从 `templates/tool-evidence-log.md` 建立工具证据日志；没有合格工具时使用其降级方案。若使用 LLM、Agent 或生成式工具，按 `references/ai-assisted-modeling.md` 记录任务合同、权限边界、输出工件、人工审查与独立检查。按任务加载专项参考：模型选择时读取 `references/model-selection-atlas.md`；实现、验证或出现异常结果时读取 `references/verification-and-repair.md`；团队协作、排期或论文串联时读取 `references/team-and-artifact-orchestration.md`。撰写论文前，先读取 `references/paper-prose-integrity.md`，完成“主张—证据—自然表达”审阅；若赛事画像为长三角杯式中文论文，再读取 `templates/yangtze-delta-paper-draft.md`；其他赛事读取 `templates/contest-paper-outline.md`。摘要使用 `templates/abstract-and-results-template.md`，图表和附录使用 `templates/figure-table-and-appendix-template.md`，导出前使用 `templates/submission-compliance-template.md`。
+开始任一阶段时，读取 `references/deliverables.md` 并建立相应交付物。每个关键子问题从 `templates/model-evidence-pack.md` 复制一份“模型证据包”，并在选型、实现、验证和论文写作时持续更新。多问题赛题、工作流切换或结果需要进入论文时，读取 `references/modular-task-routing.md`，从 `templates/task-method-result-map.md` 建立“需求—方法—结果—验证—图表/正文”映射；随机仿真或风险分布任务先读取 `references/simulation-uncertainty-experiments.md`。若当前会话存在合适的已启用工具/连接器，先阅读 `references/tool-enhanced-execution.md`，完成工具预检，并从 `templates/tool-evidence-log.md` 建立工具证据日志；没有合格工具时使用其降级方案。若使用 LLM、Agent 或生成式工具，按 `references/ai-assisted-modeling.md` 记录任务合同、权限边界、输出工件、人工审查与独立检查。按任务加载专项参考：模型选择时读取 `references/model-selection-atlas.md`；实现、验证或出现异常结果时读取 `references/verification-and-repair.md`；团队协作、排期或论文串联时读取 `references/team-and-artifact-orchestration.md`。撰写论文前，先读取 `references/paper-prose-integrity.md`，完成“主张—证据—自然表达”审阅；若赛事画像为长三角杯式中文论文，再读取 `templates/yangtze-delta-paper-draft.md`；其他赛事读取 `templates/contest-paper-outline.md`。摘要使用 `templates/abstract-and-results-template.md`，图表和附录使用 `templates/figure-table-and-appendix-template.md`，导出前使用 `templates/submission-compliance-template.md`。
 
 ## 顺序工作流
 
@@ -46,7 +46,7 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 
 ### 3. 计算实现与实验设计
 
-将数据加载、清洗、建模、求解、评估和作图分离。固定随机种子，记录包版本、参数、输入文件版本和运行时间。为每个核心模块加入小规模或极端情形测试；先复现基线，再增加复杂模型。
+将数据加载、清洗、建模、求解、评估和作图分离。固定随机种子，记录包版本、参数、输入文件版本和运行时间。为每个核心模块加入小规模或极端情形测试；先复现基线，再增加复杂模型。若包含随机仿真，按 `references/simulation-uncertainty-experiments.md` 记录随机机制、种子策略、收敛诊断、重复运行与风险指标。
 
 只报告可重复计算得到的数字。遇到无解、未收敛、数值不稳或求解器超时，应诊断并记录状态；松弛或近似方法必须明确标注，不得把失败输出包装成最优结果。若修复无效，按 `references/verification-and-repair.md` 的“执行级→实现级→规格级→问题级”协议升级；重复代码修补不能替代对数学规格的复核。
 
@@ -54,7 +54,7 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 
 ### 4. 验证、稳健性与反例检查
 
-预测任务使用独立验证或时间外测试，并在训练残差按预先声明的诊断出现自相关异常时，执行 `references/verification-and-repair.md` 的残差自相关自动修正与回退协议：先完成对齐/泄漏/断点审计，在训练期内部滚动验证有限修正候选，冻结选择后才运行一次最终时间外确认。优化任务检查可行性、约束违反和基线差异；机制模型检查量纲、边界、极端情景和已知规律；仿真任务报告重复运行结果与不确定性。先建立证据矩阵，再按 `references/verification-and-repair.md` 完成四层审计。
+预测任务使用独立验证或时间外测试，并在训练残差按预先声明的诊断出现自相关异常时，执行 `references/verification-and-repair.md` 的残差自相关自动修正与回退协议：先完成对齐/泄漏/断点审计，在训练期内部滚动验证有限修正候选，冻结选择后才运行一次最终时间外确认。优化任务检查可行性、约束违反和基线差异；机制模型检查量纲、边界、极端情景和已知规律；仿真任务按 `references/simulation-uncertainty-experiments.md` 报告重复运行、收敛、分布/尾部风险与不确定性来源。先建立证据矩阵，再按 `references/verification-and-repair.md` 完成四层审计。
 
 至少完成以下四项中的三项，并解释不能完成的项目：基线比较、灵敏度分析、替代模型比较、边界/极端情景测试、误差/残差检查、外推风险检查。若进行灵敏度分析，必须在 `templates/model-evidence-pack.md` 记录基准点、参数范围/分布、局部或全局方法、步长或采样收敛检查及结论边界；不得把局部排序写成全局重要性。优先报告模型失败条件和结果稳定区间。
 
@@ -62,9 +62,9 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 
 ### 5. 论文与提交
 
-把论文写成可独立理解的论证，而不是代码说明书。先说明问题、假设和符号，再按“目的—输入与假设—模型—求解—证据—解释—局限”叙述每个子任务。采用 `references/team-and-artifact-orchestration.md` 中的交付物依赖图和图表审阅协议；每张图表必须有编号、单位、来源/生成口径和一句支持论点的解读。
+把论文写成可独立理解的论证，而不是代码说明书。先说明问题、假设和符号，再按“目的—输入与假设—模型—求解—证据—解释—局限”叙述每个子任务。完成 `templates/task-method-result-map.md`，确认每项题目要求都映射到方法、已冻结结果、验证和正文/图表位置。采用 `references/team-and-artifact-orchestration.md` 中的交付物依赖图和图表审阅协议；每张图表必须有编号、单位、来源/生成口径和一句支持论点的解读。
 
-完成前执行终检：检查是否回答所有问题、符号是否首次定义、表图和正文数字是否一致、约束是否满足、引用是否可追溯、结论是否超过证据范围、附件是否可复现；按 `references/paper-prose-integrity.md` 完成主张回链、推断强度、模板化表述和局限呈现复核。
+完成前执行终检：检查是否回答所有问题、符号是否首次定义、表图和正文数字是否一致、约束是否满足、引用是否可追溯、结论是否超过证据范围、附件是否可复现；核对 `templates/task-method-result-map.md`，确保摘要与结论只引用已冻结结果；按 `references/paper-prose-integrity.md` 完成主张回链、推断强度、模板化表述和局限呈现复核。
 
 **通过门槛：** 依据赛事画像选择的论文模板完成结构；摘要、图表、附录与支撑材料均可回链到模型证据包；按 `references/paper-prose-integrity.md` 完成自然表达与证据完整性审阅；使用 `templates/submission-compliance-template.md` 完成格式、匿名、引用和文件一致性终检。
 
