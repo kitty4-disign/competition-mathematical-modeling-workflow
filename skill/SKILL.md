@@ -7,7 +7,7 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 
 将真实题目转化为**可解释、可计算、可验证、可复现**的方案。把模型或 Agent 生成的内容视为待检验的候选，不把它当作结论。
 
-本 Skill 提供独立的通用工作流，参考端到端数学建模 Agent 的“分析—建模—计算—报告”分段思路，但**不包含**其源码、数据、模型密钥或运行环境。若另行使用外部 Agent，先审阅其许可证、依赖与数据处理方式。
+本 Skill 提供独立的通用工作流，参考端到端数学建模 Agent 的“分析—建模—计算—报告”分段思路，默认不包含外部 Agent 的源码、数据、模型密钥或运行环境。当前包在 `third_party/mathhub/` 中随附了经用户要求纳入的 MathHub 上游代码、原文工作流与格式模板；读取、修改或再分发前必须按 `references/mathhub-source-integration.md` 审阅其许可证、版权通知、依赖与数据处理边界。
 
 ## 启动与输入检查
 
@@ -15,7 +15,7 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 
 信息缺失但不阻塞时，采用最少的合理假设并集中列入“假设与局限”；信息会改变模型选择时，先索取信息，不要隐式猜测。建立 `decision_log`，记录模型选择、参数口径和被排除的替代方案。若计划使用 LLM、Agent 或生成式工具，先读取 `references/ai-assisted-modeling.md`，建立“任务合同”，并将 AI 输出视为待验证候选。
 
-开始任一阶段时，读取 `references/deliverables.md` 并建立相应交付物。每个关键子问题从 `templates/model-evidence-pack.md` 复制一份“模型证据包”，并在选型、实现、验证和论文写作时持续更新。多问题赛题、工作流切换或结果需要进入论文时，读取 `references/modular-task-routing.md`，从 `templates/task-method-result-map.md` 建立“需求—方法—结果—验证—图表/正文”映射；随机仿真或风险分布任务先读取 `references/simulation-uncertainty-experiments.md`。若当前会话存在合适的已启用工具/连接器，先阅读 `references/tool-enhanced-execution.md`，完成工具预检，并从 `templates/tool-evidence-log.md` 建立工具证据日志；没有合格工具时使用其降级方案。若使用 LLM、Agent 或生成式工具，按 `references/ai-assisted-modeling.md` 记录任务合同、权限边界、输出工件、人工审查与独立检查。按任务加载专项参考：模型选择时读取 `references/model-selection-atlas.md`；实现、验证或出现异常结果时读取 `references/verification-and-repair.md`；团队协作、排期或论文串联时读取 `references/team-and-artifact-orchestration.md`。撰写论文前，先读取 `references/paper-prose-integrity.md`，完成“主张—证据—自然表达”审阅；若赛事画像为长三角杯式中文论文，再读取 `templates/yangtze-delta-paper-draft.md`；其他赛事读取 `templates/contest-paper-outline.md`。摘要使用 `templates/abstract-and-results-template.md`，图表和附录使用 `templates/figure-table-and-appendix-template.md`，导出前使用 `templates/submission-compliance-template.md`。
+开始任一阶段时，读取 `references/deliverables.md` 并建立相应交付物。每个关键子问题从 `templates/model-evidence-pack.md` 复制一份“模型证据包”，并在选型、实现、验证和论文写作时持续更新。多问题赛题、工作流切换或结果需要进入论文时，读取 `references/modular-task-routing.md`，从 `templates/task-method-result-map.md` 建立“需求—方法—结果—验证—图表/正文”映射；随机仿真或风险分布任务先读取 `references/simulation-uncertainty-experiments.md`。若用户明确要求查阅 MathHub 的上游代码、原文工作流或 MCM/HiMCM/中文数模格式模板，先读取 `references/mathhub-source-integration.md` 与 `third_party/mathhub/NOTICE.md`，并只按当前赛事规则与非商业许可证边界使用。若当前会话存在合适的已启用工具/连接器，先阅读 `references/tool-enhanced-execution.md`，完成工具预检，并从 `templates/tool-evidence-log.md` 建立工具证据日志；没有合格工具时使用其降级方案。若使用 LLM、Agent 或生成式工具，按 `references/ai-assisted-modeling.md` 记录任务合同、权限边界、输出工件、人工审查与独立检查。按任务加载专项参考：模型选择时读取 `references/model-selection-atlas.md`；实现、验证或出现异常结果时读取 `references/verification-and-repair.md`；团队协作、排期或论文串联时读取 `references/team-and-artifact-orchestration.md`。撰写论文前，先读取 `references/paper-prose-integrity.md`，完成“主张—证据—自然表达”审阅；若赛事画像为长三角杯式中文论文，再读取 `templates/yangtze-delta-paper-draft.md`；其他赛事读取 `templates/contest-paper-outline.md`。摘要使用 `templates/abstract-and-results-template.md`，图表和附录使用 `templates/figure-table-and-appendix-template.md`，导出前使用 `templates/submission-compliance-template.md`。
 
 ## 顺序工作流
 
@@ -74,7 +74,7 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 - 明确区分“题设事实”“数据观察”“模型假设”“计算结果”和“解释性推断”。
 - 不虚构文献、数据、求解状态、精度或真实世界效果。
 - 不使用测试集反复调参；不将相关性直接写成因果关系。
-- 对外部工具或 Agent 产生的公式、代码和引用逐项检查后再使用；先由人工完成题意与约束初稿，再以任务合同要求 AI 给出可比较候选。对 AI 生成代码采用最小复现和复验循环，对高风险结论采用两个失效模式不同的检查，详见 `references/tool-enhanced-execution.md` 与 `references/ai-assisted-modeling.md`。
+- 对外部工具或 Agent 产生的公式、代码和引用逐项检查后再使用；先由人工完成题意与约束初稿，再以任务合同要求 AI 给出可比较候选。对 AI 生成代码采用最小复现和复验循环，对高风险结论采用两个失效模式不同的检查，详见 `references/tool-enhanced-execution.md` 与 `references/ai-assisted-modeling.md`。对 `third_party/` 的上游代码、原文或模板，保留来源路径、版权/许可证文件与变更说明；未经核验不得执行，且不得将上游格式要求凌驾于当届官方规则。
 - 在交付中保留局限、误差来源、适用范围和改进方向。
 
 ## 常见请求的路由
