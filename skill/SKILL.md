@@ -1,35 +1,66 @@
 ---
 name: competition-mathematical-modeling-workflow
-description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM, and similar contests. Use when given a modeling problem statement, data, or partial solution and asked to frame the problem, select and formalize models, implement reproducible computation, validate results, or produce a competition paper and submission checklist. Do not use for routine arithmetic, isolated proof questions, or general software development without a modeling deliverable.
+description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM, and similar contests. Use when given a modeling problem statement, data, or partial solution and asked to frame the problem, select and formalize models, implement reproducible computation, validate results, or produce a competition paper and submission checklist. Use the built-in controlled Agent Loop when the work involves LLM/Agent iterations, tool calls, multi-round repair, cross-session recovery, or iterative optimization. Do not use for routine arithmetic, isolated proof questions, or general software development without a modeling deliverable.
 ---
 
 # 竞赛数学建模工作流
 
-将真实题目转化为**可解释、可计算、可验证、可复现**的方案。把模型或 Agent 生成的内容视为待检验的候选，不把它当作结论。
+将真实题目转化为**可解释、可计算、可验证、可复现**的方案。把模型、工具或 Agent 生成的内容视为待检验候选，不把它当作结论。优先简单、可解释且可验证的模型；只有在验证改善时才增加复杂度。
 
-本 Skill 提供独立的通用工作流，参考端到端数学建模 Agent 的“分析—建模—计算—报告”分段思路，默认不包含外部 Agent 的源码、数据、模型密钥或运行环境。当前包在 `third_party/mathhub/` 中随附了经用户要求纳入的 MathHub 上游代码、原文工作流与格式模板；读取、修改或再分发前必须按 `references/mathhub-source-integration.md` 审阅其许可证、版权通知、依赖与数据处理边界。
+本 Skill 使用“**阶段内有限迭代、阶段间证据门禁**”的 Agent Loop。Loop 用于生成候选、运行已批准检查、记录状态和有限修复；它不得替代题意理解、赛事规则核验、模型语义判断、关键假设或人工终审。默认不执行后台排程、外部写入、提交或权限提升。
 
-## 启动与输入检查
+本包中的 `third_party/mathhub/` 仅在用户明确要求查阅上游代码、原文工作流或模板时使用。先读取 `references/mathhub-source-integration.md` 和 `third_party/mathhub/NOTICE.md`，遵守许可证、版权、依赖与数据处理边界；不得将上游格式要求置于当届官方规则之上。
 
-收集题目、数据/字段说明、竞赛规则、交付格式、时间限制和已有成果。先从 `templates/competition-profile.md` 建立当届赛事画像；只使用已由官方文件核验的格式、匿名、页数、附件和提交规则。然后明确写出问题背景、决策对象、子问题、数据来源与口径、目标、硬/软约束、评价标准和可验证基线。
+## 1. 启动、输入和工件
 
-信息缺失但不阻塞时，采用最少的合理假设并集中列入“假设与局限”；信息会改变模型选择时，先索取信息，不要隐式猜测。建立 `decision_log`，记录模型选择、参数口径和被排除的替代方案。若计划使用 LLM、Agent 或生成式工具，先读取 `references/ai-assisted-modeling.md`，建立“任务合同”，并将 AI 输出视为待验证候选。
+收集题目、数据/字段说明、竞赛规则、交付格式、时间限制和已有成果。先从 `templates/competition-profile.md` 建立赛事画像；只使用已由官方文件核验的格式、匿名、页数、附件和提交规则。明确问题背景、决策对象、子问题、数据来源与口径、目标、硬/软约束、评价标准和可验证基线。
 
-开始任一阶段时，读取 `references/deliverables.md` 并建立相应交付物。每个关键子问题从 `templates/model-evidence-pack.md` 复制一份“模型证据包”，并在选型、实现、验证和论文写作时持续更新。多问题赛题、工作流切换或结果需要进入论文时，读取 `references/modular-task-routing.md`，从 `templates/task-method-result-map.md` 建立“需求—方法—结果—验证—图表/正文”映射；随机仿真或风险分布任务先读取 `references/simulation-uncertainty-experiments.md`。若用户明确要求查阅 MathHub 的上游代码、原文工作流或 MCM/HiMCM/中文数模格式模板，先读取 `references/mathhub-source-integration.md` 与 `third_party/mathhub/NOTICE.md`，并只按当前赛事规则与非商业许可证边界使用。若当前会话存在合适的已启用工具/连接器，先阅读 `references/tool-enhanced-execution.md`，完成工具预检，并从 `templates/tool-evidence-log.md` 建立工具证据日志；没有合格工具时使用其降级方案。若使用 LLM、Agent 或生成式工具，按 `references/ai-assisted-modeling.md` 记录任务合同、权限边界、输出工件、人工审查与独立检查。按任务加载专项参考：模型选择时读取 `references/model-selection-atlas.md`；实现、验证或出现异常结果时读取 `references/verification-and-repair.md`；团队协作、排期或论文串联时读取 `references/team-and-artifact-orchestration.md`。撰写论文前，先读取 `references/paper-prose-integrity.md`，完成“主张—证据—自然表达”审阅；若赛事画像为长三角杯式中文论文，再读取 `templates/yangtze-delta-paper-draft.md`；其他赛事读取 `templates/contest-paper-outline.md`。摘要使用 `templates/abstract-and-results-template.md`，图表和附录使用 `templates/figure-table-and-appendix-template.md`，导出前使用 `templates/submission-compliance-template.md`。
+信息缺失但不改变模型选择时，采用最少合理假设并集中记录“假设与局限”；信息会改变模型选择、数据口径或规则合规性时，先向用户索取信息，不要隐式猜测。建立 `decision_log`，记录模型选择、参数口径和被排除方案。
 
-## 顺序工作流
+开始任一阶段时，读取 `references/deliverables.md` 并建立相应交付物。每个关键子问题从 `templates/model-evidence-pack.md` 建立模型证据包；多问题赛题、工作流切换或结果进入论文时，建立 `templates/task-method-result-map.md`。随机仿真或风险分布任务先读取 `references/simulation-uncertainty-experiments.md`。
 
-### 1. 题意拆解与数据审计
+需要外部事实、工具、连接器或代码执行时，先读取 `references/tool-enhanced-execution.md`，完成能力预检并建立 `templates/tool-evidence-log.md`。需要 LLM、Agent、生成式工具、多轮修复、跨会话恢复或迭代优化时，先读取 `references/ai-assisted-modeling.md` 和 `references/agent-loop-governance.md`，建立任务合同及 `templates/agent-loop-state.md`。没有合格工具时采用其降级方案，并记录局限；不得伪造“已查询”“已运行”或“已验证”。
 
-将题目拆为相互依赖的子任务，并为每项指定输入、输出、方法候选和验收标准。将自然语言限制转为可检查的约束；区分题设条件、数据支持的假设和为简化而设的假设。
+按需加载专项参考：模型选择时读取 `references/model-selection-atlas.md`；实现、验证或异常结果时读取 `references/verification-and-repair.md`；团队协作、排期或论文串联时读取 `references/team-and-artifact-orchestration.md`；论文写作前读取 `references/paper-prose-integrity.md`。摘要、图表、附录与提交终检分别使用对应模板。
 
-先完成数据审计和最低成本的探索性分析。检查字段类型、范围、缺失、重复、异常、泄漏、量纲、时间顺序和抽样偏差。需要外部事实、标准、统计或文献时，先按 `tool-enhanced-execution.md` 执行来源检索并记录 URL、日期和使用位置；不得用编造数据、无法追溯的外部数字或未说明的插补支撑关键结论。
+## 2. 受控 Agent Loop 协议
 
-**通过门槛：** 形成问题定义、变量字典、数据质量说明、假设清单和子任务路线图。
+仅在建立状态文件后运行 Loop。每次迭代只能处理一个明确子问题，并按以下顺序执行：
 
-### 2. 生成并选择模型
+```text
+冻结输入与约束 → 提出一个候选或最小变更 → 执行批准的检查 → 独立复核
+→ 更新状态、证据包、工具日志与决策日志 → advance / retry / rollback / escalate / stop
+```
 
-为每个关键子任务提出至少两个合理候选，除非题目结构已经唯一限定模型。先完成 `references/model-selection-atlas.md` 的六维分类，并在 `templates/model-evidence-pack.md` 填写候选准入门禁（目标、数据、可检验假设、复现与审计）；门禁不通过的候选不得进入比较表。随后完成候选比较表和“题意—公式”映射，再用解释性、数据需求、约束匹配、计算成本、可验证性和竞赛叙事完整性比较，而不是只选最复杂的方案。
+在状态文件中记录：阶段、子问题、迭代与最大迭代数、本轮目标、可检查成功门禁、冻结题目/数据/规则/代码版本、允许工具和写入范围、候选或变更、验证证据、资源消耗、进展信号、决策和下一步唯一动作。不要依赖对话上下文承担长期记忆。
+
+| 决策 | 允许条件 | 必须动作 |
+|---|---|---|
+| `advance` | 当前阶段全部证据门禁通过。 | 冻结工件并进入下一阶段。 |
+| `retry` | 存在明确、低风险、可检验的失败原因。 | 仅修改一个主要候选或修复层后复验。 |
+| `rollback` | 新候选低于基线、违反硬约束或断开证据链。 | 回退最近冻结基线并保留失败运行。 |
+| `escalate` | 关键输入/规则/权限不足、风险越界或修复层级耗尽。 | 停止自动动作，说明缺口、风险与已有证据。 |
+| `stop` | 目标达成，或达到预声明轮数、时间或工具预算。 | 记录停止理由、未完成内容和人工后续动作。 |
+
+默认最多两次执行级修复（路径、依赖、语法、参数、工具调用）和一次实现级修复（代码与既定规格不一致、指标计算错误）。超过上限时，按 `references/verification-and-repair.md` 回溯到规格级或问题级；不要通过反复改提示词或重复调用同类工具掩盖问题。连续两轮无新增通过检查、失败类别相同且变更集合重复时，视为无进展，执行 `rollback` 或 `escalate`。
+
+先使用确定性检查、可复现计算和外部状态，再使用模型自评。只在隔离环境和非敏感样本上运行已审阅代码；不在状态或日志中保存密钥、Cookie、个人信息、未公开赛题或原始敏感数据。任何外部写入、上传、提交、发布、排程、权限提升或连接器配置变更，均须用户明确授权并在执行前展示范围摘要。
+
+## 3. 五阶段工作流与门禁
+
+### 阶段 1：题意拆解与数据审计
+
+将题目拆为相互依赖的子任务，并为每项指定输入、输出、方法候选和验收标准。将自然语言限制转为可检查约束；区分题设条件、数据支持的假设和为简化而设的假设。
+
+先完成数据审计和最低成本探索。检查字段类型、范围、缺失、重复、异常、泄漏、量纲、时间顺序和抽样偏差。需要外部事实、标准、统计或文献时，按工具增强规范检索并记录 URL、日期和使用位置；不得以编造数据、不可追溯数字或未说明插补支撑关键结论。
+
+**阶段门禁：**形成问题定义、变量字典、数据质量说明、假设清单和子任务路线图。关键字段、规则或数据口径缺失且会改变模型选择时执行 `escalate`，不得进入选型。
+
+### 阶段 2：生成并选择模型
+
+为每个关键子问题提出至少两个合理候选，除非题目结构唯一限定模型。先完成 `references/model-selection-atlas.md` 的六维分类，在模型证据包填写候选准入门禁：目标、数据、可检验假设、复现与审计。门禁不通过的候选不得进入比较表。
+
+将候选与题意—公式映射放入同一比较表，比较解释性、数据需求、约束匹配、计算成本、可验证性和竞赛叙事完整性，而非只选最复杂方案。把选定方案写为可审计规格：集合/索引、变量、参数、目标函数、约束、初值/边界、估计方法、算法、输出和适用条件。对高风险公式用变量域、单位和小例子检查；工具输出还须独立代入验证。
 
 | 问题信号 | 首选方向 | 必须验证 |
 |---|---|---|
@@ -40,50 +71,48 @@ description: Competition-grade mathematical modeling workflow for MCM/ICM, CUMCM
 | 多指标排序或方案优选 | 透明的多准则决策模型 | 指标方向、标准化、权重来源、权重敏感性 |
 | 个体互动导致宏观现象 | 仿真或主体建模 | 随机种子、多次运行、校准、情景区间 |
 
-把选定方案写成可审计的数学规格：集合/索引、变量、参数、目标函数、约束、初值与边界、估计方法、求解器/算法、输出和适用条件。将每一项公式映射到题意或数据字段。对高风险公式先用合法变量域、单位和小例子完成检查；若使用符号/计算工具，按工具增强规范记录调用及独立代入验证。
+**阶段门禁：**形成候选比较表、模型规格和“为何适用/何时失效”的解释。变量、公式、目标或验证方式无法解释时，回退至题意/数据或规格审计。
 
-**通过门槛：** 形成候选比较表、模型规格和“为何适用/何时失效”的解释。
+### 阶段 3：计算实现与实验设计
 
-### 3. 计算实现与实验设计
+将数据加载、清洗、建模、求解、评估和作图分离。固定随机种子，记录包版本、参数、输入版本和运行时间。为每个核心模块加入小规模或极端情形测试；先复现基线，再增加复杂模型。随机仿真按 `references/simulation-uncertainty-experiments.md` 记录随机机制、种子策略、收敛诊断、重复运行和风险指标。
 
-将数据加载、清洗、建模、求解、评估和作图分离。固定随机种子，记录包版本、参数、输入文件版本和运行时间。为每个核心模块加入小规模或极端情形测试；先复现基线，再增加复杂模型。若包含随机仿真，按 `references/simulation-uncertainty-experiments.md` 记录随机机制、种子策略、收敛诊断、重复运行与风险指标。
+只报告可重复计算得到的数字。无解、未收敛、数值不稳或超时时，记录求解状态和失败运行；松弛/近似必须明确标注，不得将失败输出包装成最优结果。先按执行级→实现级→规格级→问题级修复，不得重复代码修补替代规格复核。
 
-只报告可重复计算得到的数字。遇到无解、未收敛、数值不稳或求解器超时，应诊断并记录状态；松弛或近似方法必须明确标注，不得把失败输出包装成最优结果。若修复无效，按 `references/verification-and-repair.md` 的“执行级→实现级→规格级→问题级”协议升级；重复代码修补不能替代对数学规格的复核。
+**阶段门禁：**交付可运行代码、环境说明、实验配置、结果表/图生成路径及工具证据日志。无法复现基线、需要运行未审阅代码或必须越权访问时执行 `stop` 或 `escalate`。
 
-**通过门槛：** 交付可运行代码、环境说明、实验配置、结果表和图的生成路径；对影响结论的代码、求解或外部工具调用，工具证据日志中必须有输入版本、输出工件、状态和独立检查。
+### 阶段 4：验证、稳健性与反例检查
 
-### 4. 验证、稳健性与反例检查
+先建立证据矩阵，再按 `references/verification-and-repair.md` 完成输入、模型语义、计算/求解和结论叙事四层审计。预测任务使用独立验证或时间外测试；触发训练残差异常时，按其中的残差自相关修正与回退协议运行有限候选，冻结选择后只进行一次最终时间外确认。优化任务检查可行性、约束违反和基线差异；机制模型检查量纲、边界、极端情景和已知规律；仿真任务报告重复、收敛、分布/尾部风险和不确定性。
 
-预测任务使用独立验证或时间外测试，并在训练残差按预先声明的诊断出现自相关异常时，执行 `references/verification-and-repair.md` 的残差自相关自动修正与回退协议：先完成对齐/泄漏/断点审计，在训练期内部滚动验证有限修正候选，冻结选择后才运行一次最终时间外确认。优化任务检查可行性、约束违反和基线差异；机制模型检查量纲、边界、极端情景和已知规律；仿真任务按 `references/simulation-uncertainty-experiments.md` 报告重复运行、收敛、分布/尾部风险与不确定性来源。先建立证据矩阵，再按 `references/verification-and-repair.md` 完成四层审计。
+至少完成基线比较、灵敏度分析、替代模型比较、边界/极端情景测试、误差/残差检查、外推风险检查中的三项，并解释不能完成者。灵敏度分析必须记录基准点、参数范围/分布、局部/全局方法、步长/采样收敛和结论边界；不得把局部排序写成全局重要性。
 
-至少完成以下四项中的三项，并解释不能完成的项目：基线比较、灵敏度分析、替代模型比较、边界/极端情景测试、误差/残差检查、外推风险检查。若进行灵敏度分析，必须在 `templates/model-evidence-pack.md` 记录基准点、参数范围/分布、局部或全局方法、步长或采样收敛检查及结论边界；不得把局部排序写成全局重要性。优先报告模型失败条件和结果稳定区间。
+**阶段门禁：**每个关键结论均可回链到公式、数据、参数、实验或图表，且关键局限未被隐藏。发生泄漏、测试集反复调参、不可独立检查或结论超过证据范围时，回退到数据/规格阶段。
 
-**通过门槛：** 每个关键结论都能追溯到公式、数据、参数、实验或图表；关键局限不被隐藏。
+### 阶段 5：论文与提交
 
-### 5. 论文与提交
+将论文写成独立论证而非代码说明。先说明问题、假设和符号，再按“目的—输入与假设—模型—求解—证据—解释—局限”叙述各子问题。完成需求—方法—结果—验证—图表/正文映射；每张图表必须有编号、单位、来源/生成口径和一句支持论点的解读。
 
-把论文写成可独立理解的论证，而不是代码说明书。先说明问题、假设和符号，再按“目的—输入与假设—模型—求解—证据—解释—局限”叙述每个子任务。完成 `templates/task-method-result-map.md`，确认每项题目要求都映射到方法、已冻结结果、验证和正文/图表位置。采用 `references/team-and-artifact-orchestration.md` 中的交付物依赖图和图表审阅协议；每张图表必须有编号、单位、来源/生成口径和一句支持论点的解读。
+完成前核对：是否回答所有问题、符号首次定义、表图与正文数字一致、约束满足、引用可追溯、结论未超过证据、附件可复现。摘要和结论只能引用已冻结结果；按 `references/paper-prose-integrity.md` 审阅主张回链、推断强度、自然表达和局限呈现。根据赛事画像选择论文模板，最后使用 `templates/submission-compliance-template.md` 完成格式、匿名、引用和文件一致性终检。
 
-完成前执行终检：检查是否回答所有问题、符号是否首次定义、表图和正文数字是否一致、约束是否满足、引用是否可追溯、结论是否超过证据范围、附件是否可复现；核对 `templates/task-method-result-map.md`，确保摘要与结论只引用已冻结结果；按 `references/paper-prose-integrity.md` 完成主张回链、推断强度、模板化表述和局限呈现复核。
+**阶段门禁：**论文、摘要、图表、附录与支撑材料均可回链到证据包，且提交合规清单已完成。发现无证据主张、数字不一致或规则未核验时，只能 `retry` 或 `escalate`，不得为完成文本而编造。
 
-**通过门槛：** 依据赛事画像选择的论文模板完成结构；摘要、图表、附录与支撑材料均可回链到模型证据包；按 `references/paper-prose-integrity.md` 完成自然表达与证据完整性审阅；使用 `templates/submission-compliance-template.md` 完成格式、匿名、引用和文件一致性终检。
+## 4. 全局质量规则
 
-## 必须遵守的质量规则
+- 明确区分题设事实、数据观察、模型假设、计算结果和解释性推断；不将相关性写成因果。
+- 不虚构文献、数据、求解状态、精度、引用或真实世界效果；任何影响结论的外部工具/Agent 输出均须逐项检查。
+- 对高风险结论使用两个失效模式不同的检查；对 AI 生成代码采用“拆解—最小复现—多方案—复验”循环。
+- 保留失败运行、局限、误差来源、适用范围和改进方向；`feasible` 不等于已证明最优，局部敏感性不等于全局重要性。
+- 只将人工能复现、解释并独立检查的内容写入模型规格、论文核心结论或最终技能规则。
 
-- 优先简单、可解释且可验证的模型；只有在验证改善时才增加复杂度。
-- 明确区分“题设事实”“数据观察”“模型假设”“计算结果”和“解释性推断”。
-- 不虚构文献、数据、求解状态、精度或真实世界效果。
-- 不使用测试集反复调参；不将相关性直接写成因果关系。
-- 对外部工具或 Agent 产生的公式、代码和引用逐项检查后再使用；先由人工完成题意与约束初稿，再以任务合同要求 AI 给出可比较候选。对 AI 生成代码采用最小复现和复验循环，对高风险结论采用两个失效模式不同的检查，详见 `references/tool-enhanced-execution.md` 与 `references/ai-assisted-modeling.md`。对 `third_party/` 的上游代码、原文或模板，保留来源路径、版权/许可证文件与变更说明；未经核验不得执行，且不得将上游格式要求凌驾于当届官方规则。
-- 在交付中保留局限、误差来源、适用范围和改进方向。
+## 5. 常见请求路由
 
-## 常见请求的路由
+**从零开始做题：**执行全部五阶段；每个阶段先建立状态和证据门禁，再决定是否进入下一阶段。
+**已有模型或代码：**先审计问题定义、数据口径、约束、基线和验证；不要直接润色论文。
+**只需论文：**先索要模型规格、实验记录和冻结结果；证据缺失时写明所需验证，不编造。
+**只需算法建议：**交付候选比较表、规格草案、数据需求和验证计划，不无依据指定唯一算法。
+**要求 Agent 自动迭代：**先读取 Loop 治理参考、建立状态文件、声明目标/验证/停止/权限；默认仅在隔离和只读或可逆范围内试运行。
 
-**从零开始做题：** 执行全部五阶段，并在每个门槛处复核。  
-**已有模型或代码：** 先审计问题定义、数据口径、约束和验证，不要直接润色论文。  
-**只需论文：** 先索要模型规格、实验记录和结果；证据缺失时写明所需验证，不编造。  
-**只需算法建议：** 交付候选比较表、模型规格草案、数据需求和验证计划，而不是无依据地指定唯一算法。
+## 6. 交付标准
 
-## 交付标准
-
-最终交付至少包含：问题与假设摘要、变量与数据字典、模型规格、方法选择依据、可复现计算说明、验证证据、结果解释、局限性、论文/提交清单。为每个数值结论提供生成来源或复算步骤。
+最终交付至少包含问题与假设摘要、变量与数据字典、模型规格、方法选择依据、可复现计算说明、验证证据、结果解释、局限、论文/提交清单，以及（如使用 Loop）状态文件中的最终决策、停止理由和人工待办。为每个数值结论提供生成来源或复算步骤。
