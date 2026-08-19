@@ -102,7 +102,7 @@ def main() -> None:
         "S2_log_trend_month_effect": s2,
         "S3_log_trend_only": s3,
     })
-    forecasts.to_csv(OUT / "forecast_comparison.csv", index=False)
+    forecasts.to_csv(OUT / "forecast_comparison.csv", index=False, lineterminator="\n")
 
     residuals = y_train - s2_train_pred
     lag1 = float(np.corrcoef(residuals[:-1], residuals[1:])[0, 1])
@@ -121,7 +121,7 @@ def main() -> None:
             "relative_change_vs_base_pct": float((np.mean(pred) / mean_base - 1) * 100),
         })
     sensitivity = pd.DataFrame(sensitivity_rows)
-    sensitivity.to_csv(OUT / "trend_oat_sensitivity.csv", index=False)
+    sensitivity.to_csv(OUT / "trend_oat_sensitivity.csv", index=False, lineterminator="\n")
 
     model_metrics = {
         "S1_seasonal_naive": metrics(y_test, s1),
@@ -173,22 +173,26 @@ def main() -> None:
             "independent_check": "seasonal-naive baseline and a deliberately weaker trend-only comparator are reported alongside the main model",
         },
     }
-    (OUT / "workflow_test_results.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (OUT / "workflow_test_results.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
 
     plt.style.use("seaborn-v0_8-whitegrid")
     plt.rcParams["font.family"] = "sans-serif"
     plt.rcParams["font.sans-serif"] = ["Noto Sans CJK SC", "WenQuanYi Micro Hei", "DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
     fig, ax = plt.subplots(figsize=(11, 5.5))
-    ax.plot(train["Month"], y_train, color="#4C78A8", label="训练期实际值")
-    ax.plot(test["Month"], y_test, color="#1F1F1F", marker="o", label="测试期实际值")
-    ax.plot(test["Month"], s1, "--", color="#F58518", marker="o", label="S1 季节性朴素")
-    ax.plot(test["Month"], s2, "--", color="#54A24B", marker="o", label="S2 对数趋势+月份效应")
-    ax.plot(test["Month"], s3, "--", color="#E45756", marker="o", label="S3 仅趋势")
+    ax.plot(train["Month"], y_train, color="#4C78A8", label="Training observations")
+    ax.plot(test["Month"], y_test, color="#1F1F1F", marker="o", label="Holdout observations")
+    ax.plot(test["Month"], s1, "--", color="#F58518", marker="o", label="S1 seasonal naive")
+    ax.plot(test["Month"], s2, "--", color="#54A24B", marker="o", label="S2 log trend + month effects")
+    ax.plot(test["Month"], s3, "--", color="#E45756", marker="o", label="S3 trend only")
     ax.axvline(test["Month"].iloc[0], color="#777777", linewidth=1, linestyle=":")
-    ax.set_title("AirPassengers：严格时间外预测比较")
-    ax.set_xlabel("月份")
-    ax.set_ylabel("月度客运量（千人）")
+    ax.set_title("AirPassengers: strict out-of-time forecast comparison")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Monthly passengers (thousands)")
     ax.legend(ncol=2, fontsize=9)
     fig.autofmt_xdate()
     fig.tight_layout()
@@ -198,9 +202,9 @@ def main() -> None:
     fig, ax = plt.subplots(figsize=(7, 4.3))
     ax.plot(sensitivity["trend_factor"], sensitivity["mean_1960_forecast"], marker="o", color="#54A24B")
     ax.axvline(1.0, color="#777777", linewidth=1, linestyle=":")
-    ax.set_title("S2 局部灵敏度：趋势系数扰动")
-    ax.set_xlabel("趋势系数倍数")
-    ax.set_ylabel("1960 年平均预测客运量（千人）")
+    ax.set_title("S2 local sensitivity to the trend coefficient")
+    ax.set_xlabel("Trend coefficient multiplier")
+    ax.set_ylabel("Mean 1960 forecast (thousands)")
     fig.tight_layout()
     fig.savefig(OUT / "trend_oat_sensitivity.png", dpi=180)
     plt.close(fig)

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Competition Mathematical Modeling"
+  short_description: "Evidence-first contest modeling workflow"
+  default_prompt: "Use $competition-mathematical-modeling-workflow to turn this contest problem into a falsifiable, reproducible modeling plan and deliverable."

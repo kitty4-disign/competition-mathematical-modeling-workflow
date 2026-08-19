@@ -1,0 +1,4 @@
+# Reproduction environment for the checked-in artifacts (Python 3.12.13).
+numpy==2.5.2
+pandas==3.0.1
+matplotlib==3.11.1

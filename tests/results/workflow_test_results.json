@@ -35,18 +35,18 @@
     ],
     "coefficients": [
       4.725516359448694,
-      0.010307450378673536,
-      -0.017530501383349335,
-      0.11892457215430187,
-      0.07680551100793077,
-      0.0727501534309315,
+      0.010307450378673583,
+      -0.017530501383349384,
+      0.11892457215430169,
+      0.0768055110079307,
+      0.07275015343093146,
       0.19528745783773532,
       0.2956582106416593,
-      0.28856418737666384,
-      0.1474939164801305,
-      0.006278299319263327,
-      -0.1346232928724944,
-      -0.019028310955130162
+      0.28856418737666373,
+      0.14749391648013044,
+      0.00627829931926313,
+      -0.13462329287249455,
+      -0.019028310955130225
     ]
   },
   "time_out_metrics": {
@@ -57,10 +57,10 @@
       "bias": -47.833333333333336
     },
     "S2_log_trend_month_effect": {
-      "MAE": 35.04822354008908,
-      "RMSE": 40.15013647429162,
-      "MAPE_pct": 7.8387556669819185,
-      "bias": 35.04822354008908
+      "MAE": 35.04822354009233,
+      "RMSE": 40.150136474294364,
+      "MAPE_pct": 7.8387556669826015,
+      "bias": 35.04822354009233
     },
     "S3_log_trend_only": {
       "MAE": 69.7159537693323,
@@ -70,19 +70,19 @@
     }
   },
   "residual_diagnostics": {
-    "training_residual_mean": 0.06018080309865078,
-    "training_residual_lag1_correlation": 0.8239857450837379,
+    "training_residual_mean": 0.06018080309770964,
+    "training_residual_lag1_correlation": 0.8239857450837431,
     "note": "Lag-1 correlation is descriptive only; no claim of white-noise residuals is made without a formal test."
   },
   "boundary_checks": {
     "all_s2_predictions_positive": true,
     "all_s2_predictions_finite": true,
-    "s2_test_min": 426.0475758138719,
-    "s2_test_max": 630.6910666968859
+    "s2_test_min": 426.0475758138745,
+    "s2_test_max": 630.6910666968897
   },
   "sensitivity_protocol": {
     "type": "local OAT on fitted log-scale trend coefficient",
-    "baseline": 0.010307450378673536,
+    "baseline": 0.010307450378673583,
     "perturbation": "-5%, 0%, +5% of trend coefficient; all other coefficients fixed",
     "output": "mean 1960 forecast",
     "limitation": "This is local parameter sensitivity, not a global importance ranking and not a model-structure uncertainty analysis."
