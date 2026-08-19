@@ -2,9 +2,9 @@
 
 ## 使用前必读
 
-本参考用于需要查阅本技能包中随附的 MathHub 上游代码、原文工作流或赛事格式模板时。先阅读 [`../third_party/mathhub/NOTICE.md`](../third_party/mathhub/NOTICE.md) 和 [`../third_party/mathhub/upstream/LICENSE.txt`](../third_party/mathhub/upstream/LICENSE.txt)，并确认用途与分发满足 **PolyForm Noncommercial 1.0.0** 的限制。
+本文档仅用于在 GitHub 仓库中查阅单独保存的 MathHub 上游代码、原文工作流或赛事格式模板。先阅读 [`NOTICE.md`](NOTICE.md) 和 [`upstream/LICENSE.txt`](upstream/LICENSE.txt)，并确认用途与分发满足 **PolyForm Noncommercial 1.0.0** 的限制。
 
-上游组件位于 `third_party/mathhub/upstream/`，按原路径保留。它们是补充资源，不替代当前技能的模型证据包、工具日志、独立验证、自然表达审阅或当届官方规则。上游格式与当前赛事规则冲突时，以官方规则为准。
+上游组件位于 `vendor/mathhub/upstream/`，按原路径保留。它们不属于可安装 skill，不替代当前技能的模型证据包、工具日志、独立验证、自然表达审阅或当届官方规则。上游格式与当前赛事规则冲突时，以官方规则为准。
 
 ## 原文工作流路由
 
@@ -27,7 +27,7 @@
 
 ## 上游 Python 审批代码
 
-`third_party/mathhub/upstream/python-approval.ts` 提供一个**上游原始 TypeScript 源文件**：它将入口点、文件路径/哈希、参数和超时组成规范化清单，签发短时一次性令牌，并在执行前校验令牌、清单哈希和过期状态。
+`vendor/mathhub/upstream/python-approval.ts` 提供一个**上游原始 TypeScript 源文件**：它将入口点、文件路径/哈希、参数和超时组成规范化清单，签发短时一次性令牌，并在执行前校验令牌、清单哈希和过期状态。
 
 本技能包不自动编译、安装或执行该文件。若用户在另一个 Node.js/TypeScript 项目中明确需要采用它，应先完成以下检查：
 
@@ -38,4 +38,4 @@
 
 ## 原样组件与原创扩展的区分
 
-`third_party/mathhub/upstream/` 下文件为上游原样内容，并受其许可证控制；本目录以外的工作流、模板和参考文件为本技能包已有或新增内容。修改上游文件时，应在同目录添加变更说明、保留来源路径与 Required Notice，并继续提供上游许可证文本。
+`vendor/mathhub/upstream/` 下文件为上游原样内容，并受其许可证控制；可安装 skill 的工作流、模板和参考文件为本仓库原创内容。修改上游文件时，应在同目录添加变更说明、保留来源路径与 Required Notice，并继续提供上游许可证文本。

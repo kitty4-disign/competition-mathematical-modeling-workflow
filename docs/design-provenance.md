@@ -1,6 +1,6 @@
 # 设计来源与整合边界
 
-本 Skill 是独立撰写的工作流与模板，不包含或重分发第三方项目的源码、数据、模型权重、脚本或原文段落。它吸收了以下公开资源的高层设计原则，并按竞赛建模场景重新组织。
+可安装目录 `competition-mathematical-modeling-workflow/` 中的工作流与模板为独立撰写，不包含第三方项目源码、模型权重或原文技能包。本 GitHub 仓库另在 `vendor/mathhub/` 保存一组 MathHub 上游原样文件；该目录不属于可安装 skill，并单独受其中的 `NOTICE.md` 与 `upstream/LICENSE.txt` 约束。下表说明原创 skill 吸收并重新组织的高层设计原则，不改变 vendor 文件的权利边界。
 
 | 来源 | 吸收的高层原则 | 在本 Skill 中的落点 |
 |---|---|---|
